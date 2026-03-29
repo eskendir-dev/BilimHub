@@ -1,16 +1,23 @@
-# React + Vite
+# BilimHub - Интеллектуальная экосистема Aqbobek Lyceum
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Проект разработан в рамках хакатона AIShack 3.0. 
 
-Currently, two official plugins are available:
+### 快速开始 (Быстрый запуск)
+Убедитесь, что у вас установлен **Node.js**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. Клонируйте репозиторий:
+   `git clone https://github.com/eskendir-dev/BilimHub.git`
+2. Перейдите в папку:
+   `cd BilimHub`
+3. Установите зависимости:
+   `npm install`
+4. Запустите проект:
+   `npm run dev`
 
-## React Compiler
+### 🌟 Основные фичи:
+- **AI-Наставник:** Анализирует оценки из Mock API и дает советы по обучению.
+- **Kiosk Mode:** Специальный режим для школьных мониторов с автоскроллом.
+- **Role-Based UI:** Разные интерфейсы для Ученика и Администрации.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 🛠 Стек:
+React.js + Vite + CSS
