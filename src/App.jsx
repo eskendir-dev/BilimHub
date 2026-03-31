@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { bilimClassAPI, mockData } from './mockServer';
 
-const k = 'bilimhub_full_hackathon_v4';
+const DB_KEY = 'bilimhub_full_hackathon_v4';
+const THEME_KEY = 'bilimhub_theme_v1';
 const clsArr = ['9А', '9Б', '9В', '10А', '10Б', '11А', '11Б'];
 
 const roleTxt = {
@@ -21,37 +22,29 @@ function makeDb() {
       { id: 'u_st_002', email: 'student9b@school.kz', password: '123456', role: 'student', name: 'Айгерим Нурова', className: '9Б', avatar: '', linkedStudentEmail: '', teachesClasses: [] },
       { id: 'u_st_003', email: 'student10a@school.kz', password: '123456', role: 'student', name: 'Дамир Жанов', className: '10А', avatar: '', linkedStudentEmail: '', teachesClasses: [] },
       { id: 'u_st_004', email: 'student11a@school.kz', password: '123456', role: 'student', name: 'Камила Омар', className: '11А', avatar: '', linkedStudentEmail: '', teachesClasses: [] },
-
       { id: 'u_pr_001', email: 'parent9a@school.kz', password: '123456', role: 'parent', name: 'Гульнара Сейтова', className: '', avatar: '', linkedStudentEmail: 'student9a@school.kz', teachesClasses: [] },
       { id: 'u_pr_002', email: 'parent11a@school.kz', password: '123456', role: 'parent', name: 'Берик Омаров', className: '', avatar: '', linkedStudentEmail: 'student11a@school.kz', teachesClasses: [] },
-
       { id: 'u_te_001', email: 'teacher.math@school.kz', password: '123456', role: 'teacher', name: 'Мария Иванова', className: '', avatar: '', linkedStudentEmail: '', teachesClasses: ['9А', '9Б', '10А'] },
       { id: 'u_te_002', email: 'teacher.phys@school.kz', password: '123456', role: 'teacher', name: 'Асель Нурова', className: '', avatar: '', linkedStudentEmail: '', teachesClasses: ['10Б', '11А', '11Б'] },
-
       { id: 'u_ad_001', email: 'admin@school.kz', password: '123456', role: 'admin', name: 'Администратор Лицея', className: '', avatar: '', linkedStudentEmail: '', teachesClasses: [] },
       { id: 'u_ki_001', email: 'kiosk@school.kz', password: '123456', role: 'kiosk', name: 'Школьный Монитор', className: '', avatar: '', linkedStudentEmail: '', teachesClasses: [] },
     ],
-
     news: [
       { id: 'n1', authorId: 'u_ad_001', title: 'Открытие хакатона', description: 'Сегодня стартует школьный хакатон.', image: 'https://picsum.photos/seed/news1/900/1200', likes: [], createdAt: '2026-03-28 10:00' },
       { id: 'n2', authorId: 'u_te_001', title: 'Консультация по математике', description: 'В среду консультация для 9-х классов.', image: 'https://picsum.photos/seed/news2/900/1200', likes: [], createdAt: '2026-03-29 12:30' },
       { id: 'n3', authorId: 'u_ad_001', title: 'Репетиция последнего звонка', description: 'Репетиция для 11-х классов.', image: 'https://picsum.photos/seed/news3/900/1200', likes: [], createdAt: '2026-03-30 09:20' },
     ],
-
     clubs: [
       { id: 'cl1', name: 'Робототехника', teacherId: 'u_te_001', approved: true },
       { id: 'cl2', name: 'Дебатный клуб', teacherId: 'u_te_001', approved: true },
       { id: 'cl3', name: 'Физика PRO', teacherId: 'u_te_002', approved: true },
     ],
-
     clubRequests: [{ id: 'req1', teacherId: 'u_te_001', name: 'Олимпиадная математика', status: 'pending' }],
-
     clubEnrollments: [
       { studentEmail: 'student9a@school.kz', clubId: 'cl1' },
       { studentEmail: 'student10a@school.kz', clubId: 'cl2' },
       { studentEmail: 'student11a@school.kz', clubId: 'cl3' },
     ],
-
     schedules: {
       '9А': { sourceType: 'url', value: 'https://example.com/schedule/9a.xlsx', updatedAt: '2026-03-20 10:00' },
       '9Б': { sourceType: 'url', value: 'https://example.com/schedule/9b.xlsx', updatedAt: '2026-03-20 10:00' },
@@ -61,12 +54,10 @@ function makeDb() {
       '11А': { sourceType: 'url', value: 'https://example.com/schedule/11a.xlsx', updatedAt: '2026-03-20 10:00' },
       '11Б': { sourceType: 'url', value: 'https://example.com/schedule/11b.xlsx', updatedAt: '2026-03-20 10:00' },
     },
-
     chats: [
       { id: 'm1', fromEmail: 'teacher.math@school.kz', toEmail: 'student9a@school.kz', text: 'Подготовьтесь к теме квадратных уравнений.', createdAt: Date.now() - 3600000 },
       { id: 'm2', fromEmail: 'admin@school.kz', toEmail: 'teacher.phys@school.kz', text: 'Проверьте заявку по кружку.', createdAt: Date.now() - 1800000 },
     ],
-
     teacherEdited: {},
     recentDialogs: {
       'teacher.math@school.kz': ['student9a@school.kz'],
@@ -77,34 +68,37 @@ function makeDb() {
   };
 }
 
-function getD() {
-  const x = localStorage.getItem(k);
+function getDb() {
+  const x = localStorage.getItem(DB_KEY);
   if (x) return JSON.parse(x);
   return makeDb();
 }
 
+function getTheme() {
+  return localStorage.getItem(THEME_KEY) || 'light';
+}
+
 function App() {
-  const [d, setD] = useState(getD);
+  const [d, setD] = useState(getDb);
+  const [theme, setTheme] = useState(getTheme);
   const [a, setA] = useState({ ok: false, id: null });
   const [p, setP] = useState('news');
   const [o, setO] = useState(false);
   const [m, setM] = useState('login');
   const [er, setEr] = useState('');
 
-  const [f, setF] = useState({
-    email: '',
-    password: '',
-    role: 'student',
-    name: '',
-    className: '9А',
-    linkedStudentEmail: '',
-  });
+  const [f, setF] = useState({ email: '', password: '', role: 'student', name: '', className: '9А', linkedStudentEmail: '' });
 
   const u = useMemo(() => d.users.find((z) => z.id === a.id) || null, [d.users, a.id]);
 
   useEffect(() => {
-    localStorage.setItem(k, JSON.stringify(d));
+    localStorage.setItem(DB_KEY, JSON.stringify(d));
   }, [d]);
+
+  useEffect(() => {
+    localStorage.setItem(THEME_KEY, theme);
+    document.body.setAttribute('data-theme', theme);
+  }, [theme]);
 
   const stMail = useMemo(() => {
     if (!u) return '';
@@ -179,7 +173,7 @@ function App() {
   const addNews = (x) => {
     setD((z) => ({
       ...z,
-      news: [{ id: mk(), authorId: u.id, title: x.title, description: x.description, image: x.image || 'https://picsum.photos/seed/new/900/1200', likes: [], createdAt: new Date().toLocaleString('ru-RU') }, ...z.news],
+      news: [{ id: mk(), authorId: u.id, title: x.title, description: x.description, image: x.image || 'https://picsum.photos/seed/newpost/900/1200', likes: [], createdAt: new Date().toLocaleString('ru-RU') }, ...z.news],
     }));
   };
 
@@ -212,10 +206,7 @@ function App() {
   const saveSch = ({ className, sourceType, value }) => {
     setD((z) => ({
       ...z,
-      schedules: {
-        ...z.schedules,
-        [className]: { sourceType, value, updatedAt: new Date().toLocaleString('ru-RU') },
-      },
+      schedules: { ...z.schedules, [className]: { sourceType, value, updatedAt: new Date().toLocaleString('ru-RU') } },
     }));
   };
 
@@ -250,10 +241,7 @@ function App() {
     if (!to) return { ok: false, msg: 'Пользователь не найден' };
     if (!canMsg(u, to)) return { ok: false, msg: 'Нельзя писать этому пользователю' };
 
-    setD((z) => ({
-      ...z,
-      chats: [...z.chats, { id: mk(), fromEmail: u.email, toEmail: to.email, text, createdAt: Date.now() }],
-    }));
+    setD((z) => ({ ...z, chats: [...z.chats, { id: mk(), fromEmail: u.email, toEmail: to.email, text, createdAt: Date.now() }] }));
     savePair(u.email, to.email);
     return { ok: true };
   };
@@ -273,7 +261,15 @@ function App() {
 
   return (
     <div className="layout">
-      <Side user={u} active={p} setActive={setP} onLogin={() => setO(true)} onLogout={out} />
+      <Side
+        user={u}
+        active={p}
+        setActive={setP}
+        onLogin={() => setO(true)}
+        onLogout={out}
+        theme={theme}
+        setTheme={setTheme}
+      />
 
       <main className="main">
         <Top user={u} cls={stClass} />
@@ -285,15 +281,7 @@ function App() {
           </div>
         )}
 
-        {u && p === 'news' && u.role !== 'kiosk' && <News user={u} news={d.news} onLike={like} addNews={addNews} editNews={editNews} delNews={delNews} />}
-
-        {u && p === 'news' && u.role === 'kiosk' && (
-          <div className="card">
-            <h3>Лента новостей (Киоск)</h3>
-            <Feed news={d.news} user={null} onLike={() => {}} />
-          </div>
-        )}
-
+        {u && p === 'news' && <News user={u} news={d.news} onLike={like} addNews={addNews} editNews={editNews} delNews={delNews} />}
         {u && p === 'grades' && ['student', 'parent', 'teacher'].includes(u.role) && <Grades user={u} cls={stClass} db={d} saveT={saveT} />}
         {u && p === 'clubs' && ['student', 'parent', 'teacher'].includes(u.role) && <Clubs user={u} db={d} stMail={stMail} tgClub={tgClub} reqClub={reqClub} />}
         {u && p === 'stats' && u.role === 'admin' && <Stats db={d} doReq={doReq} />}
@@ -318,7 +306,7 @@ function App() {
   );
 }
 
-function Side({ user, active, setActive, onLogin, onLogout }) {
+function Side({ user, active, setActive, onLogin, onLogout, theme, setTheme }) {
   const arr = user
     ? [
         { id: 'news', t: 'Лента новостей', ok: true },
@@ -334,6 +322,7 @@ function Side({ user, active, setActive, onLogin, onLogout }) {
   return (
     <aside className="side">
       <div className="logo">BilimHub</div>
+
       <div className="miniUser">
         <div className="avatar">{user?.avatar ? <img src={user.avatar} alt="" /> : <span>{user ? user.name[0] : 'Г'}</span>}</div>
         <div>
@@ -341,9 +330,15 @@ function Side({ user, active, setActive, onLogin, onLogout }) {
           <p className="miniRole">{user ? roleTxt[user.role] : 'Не авторизован'}</p>
         </div>
       </div>
+
       <div className="menu">
         {arr.map((x) => <button key={x.id} className={`menuBtn ${active === x.id ? 'active' : ''}`} onClick={() => setActive(x.id)}>{x.t}</button>)}
       </div>
+
+      <button className="menuBtn" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+        Тема: {theme === 'light' ? 'Светлая' : 'Тёмная'}
+      </button>
+
       {user ? <button className="menuBtn logoutBtn" onClick={onLogout}>Выйти</button> : <button className="menuBtn active" onClick={onLogin}>Войти</button>}
     </aside>
   );
@@ -835,7 +830,7 @@ function Auth({ mode, setMode, form, setForm, error, onClose, onLogin, onRegiste
 
         <p className="switch">
           {mode === 'login' ? 'Нет аккаунта? ' : 'Уже есть аккаунт? '}
-          <button className="btn link" onClick={() => setMode(mode === 'login' ? 'register' : 'login')}>
+          <button type="button" className="btn link" onClick={() => setMode(mode === 'login' ? 'register' : 'login')}>
             {mode === 'login' ? 'Зарегистрируйтесь' : 'Войти'}
           </button>
         </p>
