@@ -1,6 +1,6 @@
-# BilimHub - Интеллектуальная экосистема Aqbobek Lyceum
+# [BilimHub - Интеллектуальная экосистема Aqbobek Lyceum](https://eskendir-dev.github.io/BilimHub/)
 
-**BilimHub** - школьный веб-портал, разработанный в рамках хакатона **AIShack 3.0**.  
+**BilimHub** - школьный веб-портал, разработанный в рамках хакатона **AIShack 3.0**. [Ссылка](https://eskendir-dev.github.io/BilimHub/) на сайт.
 
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
