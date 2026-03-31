@@ -353,7 +353,22 @@ function Top({ user, cls }) {
   const [tip, setTip] = useState('Подключите аккаунт для персональных функций.');
 
   useEffect(() => {
-    if (!user || user.role !== 'student') {
+    if (!user) {
+      setTip(
+        <span>
+          Портал готов к демонстрации. {' '}
+          <a 
+            href="https://github.com/eskendir-dev/BilimHub#тестовые-аккаунты" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ color: '#0052cc', textDecoration: 'underline' }}
+          >
+            Тестовые аккаунты
+          </a>
+        </span>
+      );
+      return;
+    } else if (user.role !== 'student') {
       setTip('Портал готов к демонстрации.');
       return;
     }
