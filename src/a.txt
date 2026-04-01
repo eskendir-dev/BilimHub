@@ -1,30 +1,3 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { bilimClassAPI, mockData, makeInitialPortalDb } from './mockServer';
-
-const DB_KEY = 'bilimhub_full_hackathon_v4';
-const THEME_KEY = 'bilimhub_theme_v1';
-const clsArr = ['9А', '9Б', '9В', '10А', '10Б', '11А', '11Б'];
-
-const roleTxt = {
-  student: 'Ученик',
-  parent: 'Родитель',
-  teacher: 'Учитель',
-  admin: 'Администрация',
-  kiosk: 'Киоск',
-};
-
-const mk = () => Math.random().toString(36).slice(2, 10);
-
-function getDb() {
-  const x = localStorage.getItem(DB_KEY);
-  if (x) return JSON.parse(x);
-  return makeInitialPortalDb();
-}
-
-function getTheme() {
-  return localStorage.getItem(THEME_KEY) || 'light';
-}
-
 function App() {
   const [d, setD] = useState(getDb);
   const [theme, setTheme] = useState(getTheme);
@@ -216,7 +189,7 @@ function App() {
         {!u && p === 'news' && (
           <div className="card">
             <h3>Лента новостей</h3>
-            <Feed news={d.news} user={null} onLike={() => { }} />
+            <Feed news={d.news} user={null} onLike={() => {}} />
           </div>
         )}
 
@@ -237,14 +210,14 @@ function App() {
 function Side({ user, active, setActive, onLogin, onLogout, theme, setTheme }) {
   const arr = user
     ? [
-      { id: 'news', t: 'Лента новостей', ok: true },
-      { id: 'grades', t: 'Оценки', ok: ['student', 'parent', 'teacher'].includes(user.role) },
-      { id: 'clubs', t: 'Кружки', ok: ['student', 'parent', 'teacher'].includes(user.role) },
-      { id: 'stats', t: 'Статистика', ok: user.role === 'admin' },
-      { id: 'schedule', t: 'Расписание', ok: true },
-      { id: 'chat', t: 'Чат', ok: !['parent', 'kiosk'].includes(user.role) },
-      { id: 'account', t: 'Аккаунт', ok: true },
-    ].filter((x) => x.ok)
+        { id: 'news', t: 'Лента новостей', ok: true },
+        { id: 'grades', t: 'Оценки', ok: ['student', 'parent', 'teacher'].includes(user.role) },
+        { id: 'clubs', t: 'Кружки', ok: ['student', 'parent', 'teacher'].includes(user.role) },
+        { id: 'stats', t: 'Статистика', ok: user.role === 'admin' },
+        { id: 'schedule', t: 'Расписание', ok: true },
+        { id: 'chat', t: 'Чат', ok: !['parent', 'kiosk'].includes(user.role) },
+        { id: 'account', t: 'Аккаунт', ok: true },
+      ].filter((x) => x.ok)
     : [{ id: 'news', t: 'Лента новостей', ok: true }];
 
   return (
@@ -756,5 +729,3 @@ function Auth({ mode, setMode, form, setForm, error, onClose, onLogin, onRegiste
     </div>
   );
 }
-
-export default App;

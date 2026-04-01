@@ -10,18 +10,6 @@ const subjects = [
   { id: 'sub_007', name: 'Биология' },
 ];
 
-const teachers = [
-  { id: 't_001', name: 'Мария Иванова', subjectId: 'sub_001' },
-  { id: 't_002', name: 'Ахмет Сейткали', subjectId: 'sub_001' },
-  { id: 't_003', name: 'Асель Нурова', subjectId: 'sub_002' },
-  { id: 't_004', name: 'Дамир Нуров', subjectId: 'sub_002' },
-  { id: 't_005', name: 'Гульнара Сейт', subjectId: 'sub_003' },
-  { id: 't_006', name: 'Берик Жанов', subjectId: 'sub_004' },
-  { id: 't_007', name: 'Лейла Омар', subjectId: 'sub_005' },
-  { id: 't_008', name: 'Айгуль Бекова', subjectId: 'sub_006' },
-  { id: 't_009', name: 'Нуржан Алиев', subjectId: 'sub_007' },
-];
-
 const classes = [
   { id: 'cls_9A', name: '9А', parallel: 9 },
   { id: 'cls_9B', name: '9Б', parallel: 9 },
@@ -39,6 +27,7 @@ const lastNames = ['Сейтов', 'Нуров', 'Жанов', 'Бекова', '
 function rnd(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
 function getScore(maxScore, level) {
   if (level === 'strong') return rnd(Math.floor(maxScore * 0.8), maxScore);
   if (level === 'average') return rnd(Math.floor(maxScore * 0.55), Math.floor(maxScore * 0.79));
@@ -90,7 +79,13 @@ export const bilimClassAPI = {
     await delay(220);
     return {
       status: 200,
-      data: students.map((s) => ({ id: s.id, name: s.name, classId: s.classId, className: s.className, parallel: s.parallel })),
+      data: students.map((s) => ({
+        id: s.id,
+        name: s.name,
+        classId: s.classId,
+        className: s.className,
+        parallel: s.parallel,
+      })),
     };
   },
 
@@ -123,7 +118,12 @@ export const bilimClassAPI = {
     return {
       status: 200,
       data: {
-        student: { id: student.id, name: student.name, className: student.className, parallel: student.parallel },
+        student: {
+          id: student.id,
+          name: student.name,
+          className: student.className,
+          parallel: student.parallel,
+        },
         subjects: bySubject,
       },
     };
@@ -133,7 +133,9 @@ export const bilimClassAPI = {
     await delay(300);
     const cls = classes.find((c) => c.id === classId);
     if (!cls) return { status: 404, error: 'не найден' };
+
     const classStudents = students.filter((s) => s.classId === classId);
+
     return {
       status: 200,
       data: {
@@ -144,4 +146,72 @@ export const bilimClassAPI = {
   },
 };
 
-export const mockData = { students, grades, classes, subjects, teachers };
+export const mockData = {
+  students,
+  grades,
+  classes,
+  subjects,
+};
+
+export function makeInitialPortalDb() {
+  return {
+    users: [
+      { id: 'u_st_001', email: 'student9a@school.kz', password: '123456', role: 'student', name: 'Алихан Сейтов', className: '9А', avatar: '', linkedStudentEmail: '', teachesClasses: [] },
+      { id: 'u_st_002', email: 'student9b@school.kz', password: '123456', role: 'student', name: 'Айгерим Нурова', className: '9Б', avatar: '', linkedStudentEmail: '', teachesClasses: [] },
+      { id: 'u_st_003', email: 'student10a@school.kz', password: '123456', role: 'student', name: 'Дамир Жанов', className: '10А', avatar: '', linkedStudentEmail: '', teachesClasses: [] },
+      { id: 'u_st_004', email: 'student11a@school.kz', password: '123456', role: 'student', name: 'Камила Омар', className: '11А', avatar: '', linkedStudentEmail: '', teachesClasses: [] },
+
+      { id: 'u_pr_001', email: 'parent9a@school.kz', password: '123456', role: 'parent', name: 'Гульнара Сейтова', className: '', avatar: '', linkedStudentEmail: 'student9a@school.kz', teachesClasses: [] },
+      { id: 'u_pr_002', email: 'parent11a@school.kz', password: '123456', role: 'parent', name: 'Берик Омаров', className: '', avatar: '', linkedStudentEmail: 'student11a@school.kz', teachesClasses: [] },
+
+      { id: 'u_te_001', email: 'teacher.math@school.kz', password: '123456', role: 'teacher', name: 'Мария Иванова', className: '', avatar: '', linkedStudentEmail: '', teachesClasses: ['9А', '9Б', '10А'] },
+      { id: 'u_te_002', email: 'teacher.phys@school.kz', password: '123456', role: 'teacher', name: 'Асель Нурова', className: '', avatar: '', linkedStudentEmail: '', teachesClasses: ['10Б', '11А', '11Б'] },
+
+      { id: 'u_ad_001', email: 'admin@school.kz', password: '123456', role: 'admin', name: 'Администратор Лицея', className: '', avatar: '', linkedStudentEmail: '', teachesClasses: [] },
+      { id: 'u_ki_001', email: 'kiosk@school.kz', password: '123456', role: 'kiosk', name: 'Школьный Монитор', className: '', avatar: '', linkedStudentEmail: '', teachesClasses: [] },
+    ],
+
+    news: [
+      { id: 'n1', authorId: 'u_ad_001', title: 'Открытие хакатона', description: 'Сегодня стартует школьный хакатон.', image: 'https://picsum.photos/seed/news1/900/1200', likes: [], createdAt: '2026-03-28 10:00' },
+      { id: 'n2', authorId: 'u_te_001', title: 'Консультация по математике', description: 'В среду консультация для 9-х классов.', image: 'https://picsum.photos/seed/news2/900/1200', likes: [], createdAt: '2026-03-29 12:30' },
+      { id: 'n3', authorId: 'u_ad_001', title: 'Репетиция последнего звонка', description: 'Репетиция для 11-х классов.', image: 'https://picsum.photos/seed/news3/900/1200', likes: [], createdAt: '2026-03-30 09:20' },
+    ],
+
+    clubs: [
+      { id: 'cl1', name: 'Робототехника', teacherId: 'u_te_001', approved: true },
+      { id: 'cl2', name: 'Дебатный клуб', teacherId: 'u_te_001', approved: true },
+      { id: 'cl3', name: 'Физика PRO', teacherId: 'u_te_002', approved: true },
+    ],
+
+    clubRequests: [{ id: 'req1', teacherId: 'u_te_001', name: 'Олимпиадная математика', status: 'pending' }],
+
+    clubEnrollments: [
+      { studentEmail: 'student9a@school.kz', clubId: 'cl1' },
+      { studentEmail: 'student10a@school.kz', clubId: 'cl2' },
+      { studentEmail: 'student11a@school.kz', clubId: 'cl3' },
+    ],
+
+    schedules: {
+      '9А': { sourceType: 'url', value: 'https://docs.google.com/spreadsheets/d/1CptPCnGJE4xu4PUPtb3-Zdu-eElk8I-P/edit?gid=1981616314#gid=1981616314', updatedAt: '2026-03-20 10:00' },
+      '9Б': { sourceType: 'url', value: 'https://docs.google.com/spreadsheets/d/1CptPCnGJE4xu4PUPtb3-Zdu-eElk8I-P/edit?gid=203665765#gid=203665765', updatedAt: '2026-03-20 10:00' },
+      '9В': { sourceType: 'url', value: 'https://docs.google.com/spreadsheets/d/1CptPCnGJE4xu4PUPtb3-Zdu-eElk8I-P/edit?gid=1903494538#gid=1903494538', updatedAt: '2026-03-20 10:00' },
+      '10А': { sourceType: 'url', value: 'https://docs.google.com/spreadsheets/d/1CptPCnGJE4xu4PUPtb3-Zdu-eElk8I-P/edit?gid=2068762932#gid=2068762932', updatedAt: '2026-03-20 10:00' },
+      '10Б': { sourceType: 'url', value: 'https://docs.google.com/spreadsheets/d/1CptPCnGJE4xu4PUPtb3-Zdu-eElk8I-P/edit?gid=222705019#gid=222705019', updatedAt: '2026-03-20 10:00' },
+      '11А': { sourceType: 'url', value: 'https://docs.google.com/spreadsheets/d/1CptPCnGJE4xu4PUPtb3-Zdu-eElk8I-P/edit?gid=457180191#gid=457180191', updatedAt: '2026-03-20 10:00' },
+      '11Б': { sourceType: 'url', value: 'https://docs.google.com/spreadsheets/d/1CptPCnGJE4xu4PUPtb3-Zdu-eElk8I-P/edit?gid=699220844#gid=699220844', updatedAt: '2026-03-20 10:00' },
+    },
+
+    chats: [
+      { id: 'm1', fromEmail: 'teacher.math@school.kz', toEmail: 'student9a@school.kz', text: 'Подготовьтесь к теме квадратных уравнений.', createdAt: Date.now() - 3600000 },
+      { id: 'm2', fromEmail: 'admin@school.kz', toEmail: 'teacher.phys@school.kz', text: 'Проверьте заявку по кружку.', createdAt: Date.now() - 1800000 },
+    ],
+
+    teacherEdited: {},
+    recentDialogs: {
+      'teacher.math@school.kz': ['student9a@school.kz'],
+      'student9a@school.kz': ['teacher.math@school.kz'],
+      'admin@school.kz': ['teacher.phys@school.kz'],
+      'teacher.phys@school.kz': ['admin@school.kz'],
+    },
+  };
+}
